@@ -24,6 +24,7 @@ class Bubble extends StatelessWidget {
   Bubble({
     Key? key,
     this.child,
+    this.sideChild,
     Radius? radius,
     bool? showNip,
     BubbleNip? nip,
@@ -42,6 +43,7 @@ class Bubble extends StatelessWidget {
     BubbleEdges? margin,
     AlignmentGeometry? alignment,
     BubbleStyle? style,
+    this.isLeftSideChild = false,
   })  : color = color ?? style?.color ?? Colors.white,
         borderColor = borderColor ?? style?.borderColor ?? Colors.transparent,
         borderWidth = borderWidth ?? style?.borderWidth ?? 1,
@@ -74,6 +76,8 @@ class Bubble extends StatelessWidget {
         super(key: key);
 
   final Widget? child;
+  final Widget? sideChild;
+  final bool isLeftSideChild;
   final Color color;
   final Color borderColor;
   final double borderWidth;
@@ -89,20 +93,26 @@ class Bubble extends StatelessWidget {
         key: key,
         alignment: alignment,
         margin: margin,
-        child: CustomPaint(
-          painter: BubblePainter(
-            clipper: bubbleClipper,
-            color: color,
-            borderColor: borderColor,
-            borderWidth: borderWidth,
-            borderUp: borderUp,
-            elevation: elevation,
-            shadowColor: shadowColor,
-          ),
-          child: Container(
-            padding: bubbleClipper.edgeInsets,
-            child: child,
-          ),
+        child: Row(
+          children: [
+            if (isLeftSideChild && sideChild != null) sideChild! else const SizedBox.shrink(),
+            CustomPaint(
+              painter: BubblePainter(
+                clipper: bubbleClipper,
+                color: color,
+                borderColor: borderColor,
+                borderWidth: borderWidth,
+                borderUp: borderUp,
+                elevation: elevation,
+                shadowColor: shadowColor,
+              ),
+              child: Container(
+                padding: bubbleClipper.edgeInsets,
+                child: child,
+              ),
+            ),
+            if (!isLeftSideChild && sideChild != null) sideChild! else const SizedBox.shrink(),
+          ],
         ),
       );
 }
