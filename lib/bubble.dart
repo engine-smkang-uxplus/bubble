@@ -44,6 +44,7 @@ class Bubble extends StatelessWidget {
     AlignmentGeometry? alignment,
     BubbleStyle? style,
     this.isLeftSideChild = false,
+    this.mainAxisAlignment = MainAxisAlignment.start,
   })  : color = color ?? style?.color ?? Colors.white,
         borderColor = borderColor ?? style?.borderColor ?? Colors.transparent,
         borderWidth = borderWidth ?? style?.borderWidth ?? 1,
@@ -86,6 +87,7 @@ class Bubble extends StatelessWidget {
   final Color shadowColor;
   final EdgeInsets margin;
   final AlignmentGeometry? alignment;
+  final MainAxisAlignment mainAxisAlignment;
   final BubbleClipper bubbleClipper;
 
   @override
@@ -94,6 +96,7 @@ class Bubble extends StatelessWidget {
         alignment: alignment,
         margin: margin,
         child: Row(
+          mainAxisAlignment: mainAxisAlignment,
           children: [
             if (isLeftSideChild && sideChild != null) sideChild! else const SizedBox.shrink(),
             CustomPaint(
