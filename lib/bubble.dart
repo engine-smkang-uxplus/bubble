@@ -6,8 +6,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 part 'bubble_clipper.dart';
+
 part 'bubble_edges.dart';
+
 part 'bubble_painter.dart';
+
 part 'bubble_style.dart';
 
 enum BubbleNip {
@@ -45,6 +48,10 @@ class Bubble extends StatelessWidget {
     BubbleStyle? style,
     this.isLeftSideChild = false,
     this.mainAxisAlignment = MainAxisAlignment.start,
+    this.leftChild,
+    this.rightChild,
+    this.onLongPress,
+    this.onHighlightChanged,
   })  : color = color ?? style?.color ?? Colors.white,
         borderColor = borderColor ?? style?.borderColor ?? Colors.transparent,
         borderWidth = borderWidth ?? style?.borderWidth ?? 1,
@@ -78,6 +85,8 @@ class Bubble extends StatelessWidget {
 
   final Widget? child;
   final Widget? sideChild;
+  final List<Widget>? leftChild;
+  final List<Widget>? rightChild;
   final bool isLeftSideChild;
   final Color color;
   final Color borderColor;
@@ -89,6 +98,8 @@ class Bubble extends StatelessWidget {
   final AlignmentGeometry? alignment;
   final MainAxisAlignment mainAxisAlignment;
   final BubbleClipper bubbleClipper;
+  final GestureLongPressCallback? onLongPress;
+  final ValueChanged<bool>? onHighlightChanged;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -97,25 +108,32 @@ class Bubble extends StatelessWidget {
         margin: margin,
         child: Row(
           mainAxisAlignment: mainAxisAlignment,
-          children: [
-            if (isLeftSideChild && sideChild != null) sideChild! else const SizedBox.shrink(),
-            CustomPaint(
-              painter: BubblePainter(
-                clipper: bubbleClipper,
-                color: color,
-                borderColor: borderColor,
-                borderWidth: borderWidth,
-                borderUp: borderUp,
-                elevation: elevation,
-                shadowColor: shadowColor,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: leftChild ?? []
+            ..addAll([
+              if (isLeftSideChild && sideChild != null) Align(alignment: Alignment.bottomRight, child: sideChild!) else const SizedBox.shrink(),
+              CustomPaint(
+                painter: BubblePainter(
+                  clipper: bubbleClipper,
+                  color: color,
+                  borderColor: borderColor,
+                  borderWidth: borderWidth,
+                  borderUp: borderUp,
+                  elevation: elevation,
+                  shadowColor: shadowColor,
+                ),
+                child: Container(
+                  padding: bubbleClipper.edgeInsets,
+                  child: InkWell(
+                    onHighlightChanged: onHighlightChanged,
+                    onLongPress: onLongPress,
+                    child: child,
+                  ),
+                ),
               ),
-              child: Container(
-                padding: bubbleClipper.edgeInsets,
-                child: child,
-              ),
-            ),
-            if (!isLeftSideChild && sideChild != null) sideChild! else const SizedBox.shrink(),
-          ],
+              if (!isLeftSideChild && sideChild != null) Align(alignment: Alignment.bottomLeft, child: sideChild!) else const SizedBox.shrink(),
+            ])
+            ..addAll(rightChild ?? []),
         ),
       );
 }
