@@ -52,6 +52,9 @@ class Bubble extends StatelessWidget {
     this.rightChild,
     this.onLongPress,
     this.onHighlightChanged,
+    this.width,
+    this.height,
+    this.onDoubleTap,
   })  : color = color ?? style?.color ?? Colors.white,
         borderColor = borderColor ?? style?.borderColor ?? Colors.transparent,
         borderWidth = borderWidth ?? style?.borderWidth ?? 1,
@@ -100,6 +103,10 @@ class Bubble extends StatelessWidget {
   final BubbleClipper bubbleClipper;
   final GestureLongPressCallback? onLongPress;
   final ValueChanged<bool>? onHighlightChanged;
+  final double? width;
+  final double? height;
+  final GestureTapCallback? onDoubleTap;
+
 
   @override
   Widget build(BuildContext context) => Container(
@@ -123,8 +130,10 @@ class Bubble extends StatelessWidget {
                   shadowColor: shadowColor,
                 ),
                 child: Container(
+                  // width: width,
                   padding: bubbleClipper.edgeInsets,
                   child: InkWell(
+                    onDoubleTap: onDoubleTap,
                     onHighlightChanged: onHighlightChanged,
                     onLongPress: onLongPress,
                     child: child,
