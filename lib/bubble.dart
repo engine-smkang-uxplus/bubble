@@ -50,6 +50,7 @@ class Bubble extends StatelessWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.leftChild,
     this.rightChild,
+    this.isComment = false,
     this.onLongPress,
     this.onHighlightChanged,
     this.width,
@@ -90,6 +91,7 @@ class Bubble extends StatelessWidget {
   final Widget? sideChild;
   final List<Widget>? leftChild;
   final List<Widget>? rightChild;
+  final bool isComment;
   final bool isLeftSideChild;
   final Color color;
   final Color borderColor;
@@ -113,7 +115,21 @@ class Bubble extends StatelessWidget {
         key: key,
         alignment: alignment,
         margin: margin,
-        child: Row(
+        child: isComment ? CustomPaint(
+          painter: BubblePainter(
+            clipper: bubbleClipper,
+            color: color,
+            borderColor: borderColor,
+            borderWidth: borderWidth,
+            borderUp: borderUp,
+            elevation: elevation,
+            shadowColor: shadowColor,
+          ),
+          child: Container(
+            padding: bubbleClipper.edgeInsets,
+            child: child,
+          ),
+        ) : Row(
           mainAxisAlignment: mainAxisAlignment,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: leftChild ?? []
